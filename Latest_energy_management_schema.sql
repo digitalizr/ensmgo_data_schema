@@ -1146,8 +1146,8 @@ ALTER SEQUENCE public.user_edge_gateways_id_seq OWNED BY public.user_edge_gatewa
 CREATE TABLE public.user_roles (
     id integer NOT NULL,
     user_id uuid NOT NULL,
-    role_id integer NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    role_id uuid NOT NULL
 );
 
 
@@ -1796,14 +1796,6 @@ ALTER TABLE ONLY public.user_roles
 
 
 --
--- Name: user_roles user_roles_user_id_role_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.user_roles
-    ADD CONSTRAINT user_roles_user_id_role_id_key UNIQUE (user_id, role_id);
-
-
---
 -- Name: user_smart_meters user_smart_meters_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -1959,13 +1951,6 @@ CREATE INDEX idx_user_edge_gateways_gateway_id ON public.user_edge_gateways USIN
 --
 
 CREATE INDEX idx_user_edge_gateways_user_id ON public.user_edge_gateways USING btree (user_id);
-
-
---
--- Name: idx_user_roles_role_id; Type: INDEX; Schema: public; Owner: admin
---
-
-CREATE INDEX idx_user_roles_role_id ON public.user_roles USING btree (role_id);
 
 
 --
@@ -2187,6 +2172,14 @@ ALTER TABLE ONLY public.facilities
 
 ALTER TABLE ONLY public.facilities
     ADD CONSTRAINT facilities_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(id);
+
+
+--
+-- Name: user_roles fk_user_roles_role; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
 
 
 --
